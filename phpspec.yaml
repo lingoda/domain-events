@@ -1,0 +1,6 @@
+runner.maintainers.errors.level: 8191 # E_ALL & ~E_USER_DEPRECATED & ~E_DEPRECATED
+suites:
+    domain_events_bundle:
+        namespace: Lingoda\DomainEventsBundle
+        psr4_prefix: Lingoda\DomainEventsBundle
+code_generation: false

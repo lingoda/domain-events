@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="lingoda_domain_events.lock_factory_service" alias="lock.factory"/>
+        <service id="lingoda_domain_events.event_publisher" alias="lingoda_domain_events.lockable_event_publisher"/>
+
+        <service id="lingoda_domain_events.domain_event_dispatcher_service"
+                 class="Lingoda\DomainEventsBundle\Infra\Symfony\EventSubscriber\DefaultDomainEventDispatcher"
+                 public="false">
+            <argument type="service" id="messenger.bus.default"/>
+        </service>
+
+        <service id="lingoda_domain_events.event_subscriber.publisher"
+                 class="Lingoda\DomainEventsBundle\Infra\Symfony\EventSubscriber\PublishDomainEventsSubscriber"
+                 public="false">
+            <argument type="service" id="lingoda_domain_events.event_publisher"/>
+            <argument /> <!-- this will be configured by extension -->
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="lingoda_domain_events.event_subscriber.persister"
+                 class="Lingoda\DomainEventsBundle\Infra\Doctrine\EventSubscriber\PersistDomainEventsSubscriber"
+                 public="false">
+            <argument type="service" id="lingoda_domain_events.repository.outbox_store_doctrine"/>
+            <tag name="doctrine.event_subscriber" connection="default" priority="10"/>
+        </service>
+
+        <service id="lingoda_domain_events.repository.outbox_store_doctrine"
+                 class="Lingoda\DomainEventsBundle\Infra\Doctrine\DoctrineOutboxStore"
+                 public="false">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="lingoda_domain_events.lockable_event_publisher"
+                 class="Lingoda\DomainEventsBundle\Infra\Symfony\LockableEventPublisher"
+                 public="false">
+            <argument type="service" id="lingoda_domain_events.domain_event_dispatcher_service"/>
+            <argument type="service" id="lingoda_domain_events.repository.outbox_store_doctrine"/>
+            <argument type="service" id="lingoda_domain_events.lock_factory_service"/>
+        </service>
+
+        <service id="Lingoda\DomainEventsBundle\Domain\Model\OutboxStore"
+                 alias="lingoda_domain_events.repository.outbox_store_doctrine"
+        />
+
+        <service id="lingoda_domain_events.messenger.transport.outbox.factory"
+                 class="Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\Transport\OutboxTransportFactory"
+                 public="false">
+            <tag name="messenger.transport_factory"/>
+            <argument type="service" id="doctrine"/>
+        </service>
+
+        <service id="lingoda_domain_events.outbox_message_handler"
+                 class="Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\OutboxMessageHandler"
+                 public="false">
+            <tag name="messenger.message_handler"/>
+            <argument type="service" id="messenger.routable_message_bus"/>
+            <argument /><!-- this will be configured by extension -->
+        </service>
+
+    </services>
+
+</container>

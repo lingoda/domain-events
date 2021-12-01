@@ -1,0 +1,43 @@
+{
+    "name": "lingoda/domain-events",
+    "description": "Lingoda Domain Events Bundle",
+    "type": "symfony-bundle",
+    "version": "1.0",
+    "require-dev": {
+        "nyholm/symfony-bundle-test": "^1.8",
+        "phpspec/phpspec": "^7.1",
+        "phpunit/phpunit": "^9.5",
+        "symfony/phpunit-bridge": "^5.3"
+    },
+    "license": "proprietary",
+    "require": {
+        "php": "^7.4.15 || ^8.0",
+        "doctrine/doctrine-bundle": "^2.4",
+        "doctrine/orm": "^2.10",
+        "nesbot/carbon": "^2.48",
+        "symfony/event-dispatcher": "^4.4 || ^5.3",
+        "symfony/framework-bundle": "^4.4 || ^5.2",
+        "symfony/lock": "^5.3",
+        "symfony/messenger": "^5.3",
+        "webmozart/assert": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lingoda\\DomainEventsBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lingoda\\DomainEventsBundle\\Tests\\": "tests/"
+        }
+    },
+    "suggest": {
+        "ext-amqp": "*"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    }
+}

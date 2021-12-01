@@ -1,0 +1,55 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                url: 'sqlite:///:memory:'
+                profiling: true
+                charset: UTF8
+
+    orm:
+        default_entity_manager: default
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+
+framework:
+    messenger:
+        default_bus: messenger.bus.default
+
+        buses:
+            messenger.bus.default:
+                default_middleware: allow_no_handlers
+
+services:
+    test.lingoda_domain_events.domain_event_dispatcher_service:
+        alias: lingoda_domain_events.domain_event_dispatcher_service
+        public: true
+
+    test.lingoda_domain_events.event_subscriber.publisher:
+        alias: lingoda_domain_events.event_subscriber.publisher
+        public: true
+
+    test.lingoda_domain_events.event_subscriber.persister:
+        alias: lingoda_domain_events.event_subscriber.persister
+        public: true
+
+    test.lingoda_domain_events.lockable_event_publisher:
+        alias: lingoda_domain_events.lockable_event_publisher
+        public: true
+
+    test.lingoda_domain_events.messenger.transport.outbox.factory:
+        alias: lingoda_domain_events.messenger.transport.outbox.factory
+        public: true
+
+    test.lingoda_domain_events.outbox_message_handler:
+        alias: lingoda_domain_events.outbox_message_handler
+        public: true
+
+    test.lingoda_domain_events.repository.outbox_store_doctrine:
+        alias: lingoda_domain_events.repository.outbox_store_doctrine
+        public: true
+
+    test.lingoda_domain_events.repository.outbox_store:
+        alias: Lingoda\DomainEventsBundle\Domain\Model\OutboxStore
+        public: true

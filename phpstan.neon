@@ -1,0 +1,6 @@
+includes:
+	- ../../linters/phpstan.neon
+
+parameters:
+    ignoreErrors:
+        - '#Property .+::\$id is never written, only read\.#'
