@@ -40,16 +40,14 @@ class PublishDomainEventsSubscriberSpec extends ObjectBehavior
 
     function it_publish_event_on_http_termination(
         EventPublisher $eventPublisher,
-        HttpKernelInterface $kernel,
-        Request $request,
-        Response $response
+        HttpKernelInterface $kernel
     ) {
         $eventPublisher->publishDomainEvents()->shouldBeCalledOnce();
 
         $this->publishEventsFromHttp(new TerminateEvent(
             $kernel->getWrappedObject(),
-            $request->getWrappedObject(),
-            $response->getWrappedObject()
+            Request::createFromGlobals(),
+            new Response()
         ));
     }
 
@@ -82,17 +80,15 @@ class PublishDomainEventsSubscriberSpec extends ObjectBehavior
 
     function it_wont_publish_event_on_http_termination(
         EventPublisher $eventPublisher,
-        HttpKernelInterface $kernel,
-        Request $request,
-        Response $response
+        HttpKernelInterface $kernel
     ) {
         $this->beConstructedWith($eventPublisher, false);
         $eventPublisher->publishDomainEvents()->shouldNotBeCalled();
 
         $this->publishEventsFromHttp(new TerminateEvent(
             $kernel->getWrappedObject(),
-            $request->getWrappedObject(),
-            $response->getWrappedObject()
+            Request::createFromGlobals(),
+            new Response()
         ));
     }
 

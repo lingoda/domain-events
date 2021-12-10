@@ -13,6 +13,7 @@ use Lingoda\DomainEventsBundle\Domain\Model\ReplaceableDomainEvent;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\DoctrineOutboxStore;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Event\PreAppendEvent;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Repository\OutboxRecordRepository;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -105,5 +106,17 @@ class DoctrineOutboxStoreSpec extends ObjectBehavior
         $entityManager->flush()->shouldBeCalledOnce();
 
         $this->publish($storedEvent);
+    }
+
+    function it_can_purge_all_published_events(
+        EntityManagerInterface $entityManager,
+        OutboxRecordRepository $outboxRecordRepo
+    ) {
+        $entityManager->getRepository(OutboxRecord::class)->willReturn($outboxRecordRepo);
+        $entityManager->getRepository(OutboxRecord::class)->shouldBeCalledOnce();
+
+        $outboxRecordRepo->purgePublishedEvents()->shouldBeCalledOnce();
+
+        $this->purgePublishedEvents();
     }
 }

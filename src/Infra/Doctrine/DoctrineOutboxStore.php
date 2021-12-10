@@ -12,6 +12,7 @@ use Lingoda\DomainEventsBundle\Domain\Model\OutboxStore;
 use Lingoda\DomainEventsBundle\Domain\Model\ReplaceableDomainEvent;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Event\PreAppendEvent;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Repository\OutboxRecordRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -67,6 +68,15 @@ final class DoctrineOutboxStore implements OutboxStore
 
         $this->entityManager->persist($outboxRecord);
         $this->entityManager->flush();
+    }
+
+    public function purgePublishedEvents(): void
+    {
+        /**
+         * @var OutboxRecordRepository $repo
+         */
+        $repo = $this->entityManager->getRepository(OutboxRecord::class);
+        $repo->purgePublishedEvents();
     }
 
     /**

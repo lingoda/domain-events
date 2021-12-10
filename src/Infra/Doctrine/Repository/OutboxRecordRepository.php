@@ -28,6 +28,16 @@ class OutboxRecordRepository extends EntityRepository
         return (int) $query->execute();
     }
 
+    public function purgePublishedEvents(): void
+    {
+        $this->createQueryBuilder('o')
+            ->delete()
+            ->where('o.publishedOn IS NOT NULL')
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
     public function fetchNextRecordForUpdate(): ?OutboxRecord
     {
         $query = $this->createAvailableMessagesQueryBuilder()
