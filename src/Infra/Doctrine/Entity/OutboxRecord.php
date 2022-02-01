@@ -7,6 +7,7 @@ namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Entity;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
+use Webmozart\Assert\Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Lingoda\DomainEventsBundle\Infra\Doctrine\Repository\OutboxRecordRepository")
@@ -24,7 +25,7 @@ class OutboxRecord
      * @ORM\Column(name="id", type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private string $id;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -34,7 +35,7 @@ class OutboxRecord
     /**
      * @ORM\Column(type="object", nullable=false)
      */
-    private DomainEvent $domainEvent;
+    private object $domainEvent;
 
     /**
      * @ORM\Column(type="string", length=36, nullable=false)
@@ -65,7 +66,7 @@ class OutboxRecord
 
     public function getId(): int
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     public function getEventType(): string
@@ -75,6 +76,8 @@ class OutboxRecord
 
     public function getDomainEvent(): DomainEvent
     {
+        Assert::isInstanceOf($this->domainEvent, DomainEvent::class);
+
         return $this->domainEvent;
     }
 

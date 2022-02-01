@@ -16,7 +16,6 @@ use Symfony\Component\Messenger\Exception\TransportException;
 use Symfony\Component\Messenger\Stamp\TransportMessageIdStamp;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
-use Webmozart\Assert\Assert;
 
 final class OutboxTransport implements TransportInterface, MessageCountAwareInterface
 {
@@ -28,7 +27,6 @@ final class OutboxTransport implements TransportInterface, MessageCountAwareInte
     public function __construct(EntityManagerInterface $entityManager)
     {
         $outboxRecordRepo = $entityManager->getRepository(OutboxRecord::class);
-        Assert::isInstanceOf($outboxRecordRepo, OutboxRecordRepository::class);
 
         $this->outboxRecordRepo = $outboxRecordRepo;
         $this->entityManager = $entityManager;
