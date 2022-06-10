@@ -1,6 +1,15 @@
 includes:
-	- ../../linters/phpstan.neon
-
+    - phpstan.common.neon
 parameters:
-    ignoreErrors:
-        - '#Property .+::\$id is never written, only read\.#'
+    resultCachePath: %tmpDir%/resultCache-src.php
+    paths:
+        - src
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses:
+            - RuntimeException # https://www.php.net/manual/en/class.runtimeexception.php
+            - LogicException # https://www.php.net/manual/en/class.logicexception.php
+            - Doctrine\DBAL\Exception
+            - Doctrine\ORM\ORMException
