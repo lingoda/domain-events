@@ -1,2 +1,6 @@
 includes:
-	- ../../linters/phpstan.test.neon
+    - phpstan.common.neon
+parameters:
+    resultCachePath: %tmpDir%/resultCache-tests.php
+    paths:
+        - tests

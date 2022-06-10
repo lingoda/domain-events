@@ -1,0 +1,14 @@
+includes:
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+parameters:
+    tmpDir: .phpstan-cache
+    level: 8
+    checkMissingCallableSignature: true
+    polluteScopeWithLoopInitialAssignments: false
+    polluteScopeWithAlwaysIterableForeach: false
+    checkAlwaysTrueCheckTypeFunctionCall: true
+    checkAlwaysTrueInstanceof: true
+    checkAlwaysTrueStrictComparison: true
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    treatPhpDocTypesAsCertain: false

@@ -5,3 +5,5 @@ composer.lock
 phpunit.xml
 .phpunit.result.cache
 .envrc
+.idea
+.phpstan-cache

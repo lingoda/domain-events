@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
 final class LingodaDomainEventsExtension extends Extension
 {
     /**
+     * @param array<string, mixed> $configs
      * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
