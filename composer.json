@@ -17,7 +17,7 @@
     },
     "require-dev": {
         "nyholm/symfony-bundle-test": "dev-master#b3e6ae4fe3abe502fd9d93a808457d86119cdeb6",
-        "phpspec/phpspec": "^7.1.x-dev",
+        "phpspec/phpspec": "^7.2",
         "phpunit/phpunit": "^9.5",
         "symfony/phpunit-bridge": "^5.3"
     },
