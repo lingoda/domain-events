@@ -14,27 +14,33 @@ use Lingoda\DomainEventsBundle\Infra\Symfony\LockableEventPublisher;
 use Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\OutboxMessageHandler;
 use Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\Transport\OutboxTransportFactory;
 use Lingoda\DomainEventsBundle\LingodaDomainEventsBundle;
-use Nyholm\BundleTest\BaseBundleTestCase;
-use Nyholm\BundleTest\CompilerPass\PublicServicePass;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Nyholm\BundleTest\TestKernel;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-final class BundleInitializationTest extends BaseBundleTestCase
+final class BundleInitializationTest extends KernelTestCase
 {
-    /**
-     * @return class-string
-     */
-    protected function getBundleClass(): string
+    protected static function getKernelClass(): string
     {
-        return LingodaDomainEventsBundle::class;
+        return TestKernel::class;
+    }
+
+    protected static function createKernel(array $options = []): KernelInterface
+    {
+        /** @var TestKernel $kernel */
+        $kernel = parent::createKernel($options);
+        $kernel->addTestBundle(LingodaDomainEventsBundle::class);
+        $kernel->addTestBundle(DoctrineBundle::class);
+        $kernel->addTestConfig(__DIR__ . '/config.yaml');
+        $kernel->handleOptions($options);
+
+        return $kernel;
     }
 
     public function testInitBundle(): void
     {
-        // Boot the kernel.
-        $this->bootCustomKernel();
-
-        // Get the container
-        $container = $this->getContainer();
+        $kernel = self::bootKernel();
+        $container = $kernel->getContainer();
 
         // Test if services exists
         $services = [
@@ -49,27 +55,9 @@ final class BundleInitializationTest extends BaseBundleTestCase
         ];
 
         foreach ($services as $id => $class) {
-            $this->assertTrue($container->has($id));
+            self::assertTrue($container->has($id));
             $service = $container->get($id);
-            $this->assertInstanceOf($class, $service);
+            self::assertInstanceOf($class, $service);
         }
-    }
-
-    private function bootCustomKernel(): void
-    {
-        // Create a new Kernel
-        $kernel = $this->createKernel();
-
-        // Add some configuration
-        $kernel->addConfigFile(__DIR__ . '/config.yaml');
-
-        $this->addCompilerPass(new PublicServicePass('|lingoda_domain_events.*|'));
-
-        // Add some other bundles we depend on
-        $kernel->addBundle(FrameworkBundle::class);
-        $kernel->addBundle(DoctrineBundle::class);
-
-        // Boot the kernel as normal ...
-        $this->bootKernel();
     }
 }
