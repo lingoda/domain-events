@@ -186,10 +186,11 @@ Simple example would be injecting and actorId which corresponds to the user id t
 composer install --dev
 ```
 
-### Run PHPUnit tests
+### Run tests
 
 ```bash
 vendor/bin/phpunit
+vendor/bin/phpspec run
 ```
 
 ## TODO
