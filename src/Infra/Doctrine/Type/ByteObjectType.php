@@ -19,7 +19,7 @@ class ByteObjectType extends ObjectType
         return $platform->getBlobTypeDeclarationSQL($column);
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
         $value = parent::convertToDatabaseValue($value, $platform);
 
@@ -30,7 +30,7 @@ class ByteObjectType extends ObjectType
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): object
     {
         if (is_a($platform, PostgreSQLPlatform::class)) {
             $value = str_replace('\0', chr(0), $value);
