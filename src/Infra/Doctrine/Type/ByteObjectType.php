@@ -24,10 +24,19 @@ class ByteObjectType extends ObjectType
         $value = parent::convertToDatabaseValue($value, $platform);
 
         if (is_a($platform, PostgreSQLPlatform::class)) {
-            $value = pg_escape_bytea($value);
+            $value = str_replace(chr(0), '\0', $value);
         }
 
         return $value;
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        if (is_a($platform, PostgreSQLPlatform::class)) {
+            $value = str_replace('\0', chr(0), $value);
+        }
+
+        return parent::convertToPHPValue($value, $platform);
     }
 
     public function getBindingType(): int
