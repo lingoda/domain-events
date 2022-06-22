@@ -198,3 +198,4 @@ vendor/bin/phpspec run
 - Add functional tests
 - Improve OutboxTransportFactory with additional options in the DSN
 - Add instructions for doctrine mapping and routing DomainEvent
+- Fix issues around Carbon serialization
