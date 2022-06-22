@@ -7,10 +7,11 @@ namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Entity;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Repository\OutboxRecordRepository;
 use Webmozart\Assert\Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Lingoda\DomainEventsBundle\Infra\Doctrine\Repository\OutboxRecordRepository")
+ * @ORM\Entity(repositoryClass=OutboxRecordRepository::class)
  * @ORM\Table(name=self::TABLE_NAME, indexes={
  *     @ORM\Index(name="entity_type_published_idx", columns={"entityId", "eventType", "publishedOn"}),
  *     @ORM\Index(name="occurred_published_idx", columns={"occurredAt", "publishedOn"}),
@@ -28,27 +29,27 @@ class OutboxRecord
     private string $id;
 
     /**
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(name="eventType", type="string", nullable=false)
      */
     private string $eventType;
 
     /**
-     * @ORM\Column(type="object", nullable=false)
+     * @ORM\Column(name="domainEvent", type="byte_object", nullable=false)
      */
     private object $domainEvent;
 
     /**
-     * @ORM\Column(type="string", length=36, nullable=false)
+     * @ORM\Column(name="entityId", type="string", length=36, nullable=false)
      */
     private string $entityId;
 
     /**
-     * @ORM\Column(type="carbon_immutable", nullable=false)
+     * @ORM\Column(name="occurredAt", type="carbon_immutable", nullable=false)
      */
     private CarbonImmutable $occurredAt;
 
     /**
-     * @ORM\Column(type="carbon_immutable", nullable=true)
+     * @ORM\Column(name="publishedOn", type="carbon_immutable", nullable=true)
      */
     private ?CarbonImmutable $publishedOn;
 
