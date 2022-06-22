@@ -1,5 +1,7 @@
 # Domain Events Bundle
 
+TODO: Add instructions for doctrine mapping, route domainEvent
+
 ## Installation
 
 ```bash
