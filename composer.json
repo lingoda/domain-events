@@ -2,7 +2,7 @@
     "name": "lingoda/domain-events",
     "description": "Lingoda Domain Events Bundle",
     "type": "symfony-bundle",
-    "license": "proprietary",
+    "license": "MIT",
     "require": {
         "php": "^8.1",
         "doctrine/doctrine-bundle": "^2.4.3",
