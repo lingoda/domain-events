@@ -23,7 +23,7 @@ class ByteObjectType extends ObjectType
     {
         $value = parent::convertToDatabaseValue($value, $platform);
 
-        if ($platform::class === PostgreSQLPlatform::class) {
+        if (is_a($platform, PostgreSQLPlatform::class)) {
             $value = pg_escape_bytea($value);
         }
 
