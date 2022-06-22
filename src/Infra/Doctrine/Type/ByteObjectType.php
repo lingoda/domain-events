@@ -8,6 +8,8 @@ use Doctrine\DBAL\Types\ObjectType;
 
 class ByteObjectType extends ObjectType
 {
+    public const TYPE = 'byte_object';
+
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return $platform->getBlobTypeDeclarationSQL($column);
@@ -20,6 +22,6 @@ class ByteObjectType extends ObjectType
 
     public function getName(): string
     {
-        return 'byte_object';
+        return self::TYPE;
     }
 }

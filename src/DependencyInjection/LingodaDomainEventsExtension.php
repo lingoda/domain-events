@@ -28,7 +28,6 @@ final class LingodaDomainEventsExtension extends Extension
 
         $this->useCustomMessageBusIfSpecified($config, $container);
         $this->configureEventPublishingSubscriber($config, $container);
-        $this->registerDoctrineTypes();
     }
 
     /**
@@ -57,10 +56,5 @@ final class LingodaDomainEventsExtension extends Extension
 
         $definition = $container->getDefinition('lingoda_domain_events.event_subscriber.publisher');
         $definition->replaceArgument(1, $enabled);
-    }
-
-    private function registerDoctrineTypes(): void
-    {
-        Type::addType('byte_object', ByteObjectType::class);
     }
 }
