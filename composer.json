@@ -9,10 +9,10 @@
         "doctrine/doctrine-bundle": "^2.4.3",
         "doctrine/orm": "^2.10",
         "nesbot/carbon": "^2.48",
-        "symfony/event-dispatcher": "^4.4 || ^5.3",
-        "symfony/framework-bundle": "^4.4 || ^5.2",
-        "symfony/lock": "^5.3",
-        "symfony/messenger": "^5.3",
+        "symfony/event-dispatcher": "^4.4 || ^5.3 || ^6.0",
+        "symfony/framework-bundle": "^4.4 || ^5.2 || ^6.0",
+        "symfony/lock": "^5.3 || ^6.0",
+        "symfony/messenger": "^5.3 || ^6.0",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
@@ -24,11 +24,7 @@
         "phpstan/phpstan-symfony": "^1.2",
         "phpstan/phpstan-webmozart-assert": "^1.2",
         "phpunit/phpunit": "^9.5",
-        "symfony/phpunit-bridge": "^5.3"
-    },
-    "conflict": {
-        "psr/cache": ">=2.0.0",
-        "symfony/cache": ">=6.0.0"
+        "symfony/phpunit-bridge": "^6.1"
     },
     "autoload": {
         "psr-4": {
