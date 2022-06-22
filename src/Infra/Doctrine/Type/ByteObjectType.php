@@ -30,8 +30,14 @@ class ByteObjectType extends ObjectType
         return $value;
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): object
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?object
     {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = is_resource($value) ? stream_get_contents($value) : $value;
+
         if (is_a($platform, PostgreSQLPlatform::class)) {
             $value = str_replace('\0', chr(0), $value);
         }
