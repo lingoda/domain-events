@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\DependencyInjection;
 
-use Doctrine\DBAL\Types\Type;
-use Lingoda\DomainEventsBundle\Infra\Doctrine\Type\ByteObjectType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
