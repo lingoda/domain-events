@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\DependencyInjection;
 
+use Doctrine\DBAL\Types\Type;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Type\ByteObjectType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -26,6 +28,7 @@ final class LingodaDomainEventsExtension extends Extension
 
         $this->useCustomMessageBusIfSpecified($config, $container);
         $this->configureEventPublishingSubscriber($config, $container);
+        $this->registerDoctrineTypes();
     }
 
     /**
@@ -54,5 +57,10 @@ final class LingodaDomainEventsExtension extends Extension
 
         $definition = $container->getDefinition('lingoda_domain_events.event_subscriber.publisher');
         $definition->replaceArgument(1, $enabled);
+    }
+
+    private function registerDoctrineTypes(): void
+    {
+        Type::addType('byte_object', ByteObjectType::class);
     }
 }
