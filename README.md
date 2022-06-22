@@ -1,7 +1,5 @@
 # Domain Events Bundle
 
-TODO: Add instructions for doctrine mapping, route domainEvent
-
 ## Installation
 
 ```bash
@@ -197,6 +195,6 @@ vendor/bin/phpspec run
 
 ## TODO
 
--   Add functional tests
--   Improve OutboxTransportFactory with additional options in the DSN
--
+- Add functional tests
+- Improve OutboxTransportFactory with additional options in the DSN
+- Add instructions for doctrine mapping and routing DomainEvent
