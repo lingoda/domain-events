@@ -40,14 +40,14 @@ repos:
         files: \.php$
 
       - id: src-phpstan
-        name: Braze src phpstan
+        name: domain-events src phpstan
         language: system
         entry: vendor/bin/phpstan analyse
         args: ['-c', './phpstan.neon']
         files: ^src\/.*\.php$
 
       - id: tests-phpstan
-        name: Braze tests phpstan
+        name: domain-events tests phpstan
         language: system
         entry: vendor/bin/phpstan analyse
         args: ['-c', './phpstan.tests.neon']

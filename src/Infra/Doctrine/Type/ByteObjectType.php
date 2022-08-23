@@ -5,13 +5,12 @@ namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Type;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Types\JsonType;
 use Doctrine\DBAL\Types\ObjectType;
 
 /**
  * Workaround for https://github.com/doctrine/orm/issues/4029
  */
-class ByteObjectType extends JsonType
+class ByteObjectType extends ObjectType
 {
     public const TYPE = 'byte_object';
 
