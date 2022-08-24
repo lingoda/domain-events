@@ -32,8 +32,8 @@ repos:
         entry: php -l
         files: \.php$
 
-      - id: linguando-phpspec
-        name: Linguando phpspec
+      - id: phpspec
+        name: phpspec
         language: system
         pass_filenames: false
         entry: vendor/phpspec/phpspec/bin/phpspec run
