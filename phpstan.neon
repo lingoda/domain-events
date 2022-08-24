@@ -13,3 +13,5 @@ parameters:
             - LogicException # https://www.php.net/manual/en/class.logicexception.php
             - Doctrine\DBAL\Exception
             - Doctrine\ORM\ORMException
+    excludePaths:
+        - src/Domain/Model/Traits/*

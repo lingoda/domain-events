@@ -1,0 +1,54 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+fail_fast: true
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: end-of-file-fixer
+      - id: forbid-new-submodules
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  - repo: local
+    hooks:
+      - id: composer-validate
+        name: Validate project composer
+        language: system
+        entry: composer validate -d .
+        files: composer.json
+        pass_filenames: false
+
+      - id: phplint
+        name: PHP lint
+        language: system
+        entry: php -l
+        files: \.php$
+
+      - id: phpspec
+        name: phpspec
+        language: system
+        pass_filenames: false
+        entry: vendor/phpspec/phpspec/bin/phpspec run
+        files: \.php$
+
+      - id: src-phpstan
+        name: domain-events src phpstan
+        language: system
+        entry: vendor/bin/phpstan analyse
+        args: ['-c', './phpstan.neon']
+        files: ^src\/.*\.php$
+
+      - id: tests-phpstan
+        name: domain-events tests phpstan
+        language: system
+        entry: vendor/bin/phpstan analyse
+        args: ['-c', './phpstan.tests.neon']
+        files: ^tests\/.*\.php$

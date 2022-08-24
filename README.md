@@ -19,8 +19,9 @@ lingoda_domain_events:
 ```
 
 ## Usage
+**IMPORTANT NOTE:** Never record domain events in doctrine lifecycle hooks!
 
-Example of simple User entity that triggers a Domain Event
+Example of simple User entity that triggers a Domain Event.
 
 ### Sample Domain Event
 

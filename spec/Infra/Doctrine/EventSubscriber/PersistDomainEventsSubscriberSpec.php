@@ -42,6 +42,7 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
         ContainsEvents $insertedEntity,
         ContainsEvents $updatedEntity,
         ContainsEvents $deletedEntity,
+        ContainsEvents $scheduledInsertEntity,
         DomainEvent $domainEvent,
         ReplaceableDomainEvent $replaceableDomainEvent
     ) {
@@ -58,6 +59,10 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
             ],
         ]);
 
+        $unitOfWork->getScheduledEntityInsertions()->willReturn([
+            123 => $scheduledInsertEntity,
+        ]);
+
         $entityManager->getUnitOfWork()->willReturn($unitOfWork);
         $preFlushEventArgs->getEntityManager()->willReturn($entityManager);
 
@@ -70,8 +75,68 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
         $deletedEntity->clearRecordedEvents()->shouldBeCalledOnce();
         $deletedEntity->getRecordedEvents()->willReturn([$domainEvent]);
 
-        $outboxStore->append($domainEvent)->shouldBeCalledTimes(3);
+        $scheduledInsertEntity->clearRecordedEvents()->shouldBeCalledOnce();
+        $scheduledInsertEntity->getRecordedEvents()->willReturn([$domainEvent]);
+
+        $outboxStore->append($domainEvent)->shouldBeCalledTimes(4);
         $outboxStore->replace($replaceableDomainEvent)->shouldBeCalledOnce();
+
+        $this->preFlush($preFlushEventArgs);
+    }
+
+    function it_can_persist_identified_entities(
+        OutboxStore $outboxStore,
+        EntityManagerInterface $entityManager,
+        UnitOfWork $unitOfWork,
+        PreFlushEventArgs $preFlushEventArgs,
+        ContainsEvents $updatedEntity,
+        DomainEvent $domainEvent
+    ) {
+        $unitOfWork->getIdentityMap()->willReturn([
+            [
+                $updatedEntity,
+                new \stdClass(),
+            ],
+        ]);
+
+        $unitOfWork->getScheduledEntityInsertions()->willReturn([]);
+
+        $entityManager->getUnitOfWork()->willReturn($unitOfWork);
+        $preFlushEventArgs->getEntityManager()->willReturn($entityManager);
+
+        $updatedEntity->clearRecordedEvents()->shouldBeCalledOnce();
+        $updatedEntity->getRecordedEvents()->willReturn([$domainEvent]);
+
+        $outboxStore->append($domainEvent)->shouldBeCalledTimes(1);
+
+        $this->preFlush($preFlushEventArgs);
+    }
+
+    function it_can_persist_entities_scheduled_for_insert(
+        OutboxStore $outboxStore,
+        EntityManagerInterface $entityManager,
+        UnitOfWork $unitOfWork,
+        PreFlushEventArgs $preFlushEventArgs,
+        ContainsEvents $scheduledInsertEntity,
+        DomainEvent $domainEvent,
+    ) {
+        $unitOfWork->getIdentityMap()->willReturn([
+            [
+                new \stdClass(),
+            ],
+        ]);
+
+        $unitOfWork->getScheduledEntityInsertions()->willReturn([
+            123 => $scheduledInsertEntity,
+        ]);
+
+        $entityManager->getUnitOfWork()->willReturn($unitOfWork);
+        $preFlushEventArgs->getEntityManager()->willReturn($entityManager);
+
+        $scheduledInsertEntity->clearRecordedEvents()->shouldBeCalledOnce();
+        $scheduledInsertEntity->getRecordedEvents()->willReturn([$domainEvent]);
+
+        $outboxStore->append($domainEvent)->shouldBeCalledTimes(1);
 
         $this->preFlush($preFlushEventArgs);
     }

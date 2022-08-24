@@ -33,13 +33,23 @@ final class PersistDomainEventsSubscriber implements EventSubscriber
         $uow = $eventArgs->getEntityManager()->getUnitOfWork();
 
         foreach ($uow->getIdentityMap() as $entities) {
-            foreach ($entities as $entity) {
-                if (!$entity instanceof ContainsEvents) {
-                    continue;
-                }
+            $this->persistRecordedEventsFromEntities($entities);
+        }
 
-                $this->persistRecordedEvents($entity);
+        $this->persistRecordedEventsFromEntities($uow->getScheduledEntityInsertions());
+    }
+
+    /**
+     * @param array<string|int, object|null> $entities
+     */
+    private function persistRecordedEventsFromEntities(array $entities): void
+    {
+        foreach ($entities as $entity) {
+            if (!$entity instanceof ContainsEvents) {
+                continue;
             }
+
+            $this->persistRecordedEvents($entity);
         }
     }
 
