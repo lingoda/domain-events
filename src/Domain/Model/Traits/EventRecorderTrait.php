@@ -26,7 +26,7 @@ trait EventRecorderTrait
         $this->recordedEvents = [];
     }
 
-    protected function recordEvent(DomainEvent $domainEvent): void
+    public function recordEvent(DomainEvent $domainEvent): void
     {
         $this->recordedEvents[] = $domainEvent;
     }
