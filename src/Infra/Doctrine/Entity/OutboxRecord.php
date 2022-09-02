@@ -34,7 +34,7 @@ class OutboxRecord
     private string $eventType;
 
     /**
-     * @ORM\Column(name="domainEvent", type="json_document")
+     * @ORM\Column(name="event", type="json_document")
      */
     private object $domainEvent;
 
