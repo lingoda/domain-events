@@ -29,22 +29,22 @@ class OutboxRecord
     private string $id;
 
     /**
-     * @ORM\Column(name="eventType", type="string", nullable=false)
+     * @ORM\Column(name="eventType", type="string")
      */
     private string $eventType;
 
     /**
-     * @ORM\Column(name="domainEvent", type="byte_object", nullable=false)
+     * @ORM\Column(name="domainEvent", type="json_document")
      */
     private object $domainEvent;
 
     /**
-     * @ORM\Column(name="entityId", type="string", length=36, nullable=false)
+     * @ORM\Column(name="entityId", type="string", length=36)
      */
     private string $entityId;
 
     /**
-     * @ORM\Column(name="occurredAt", type="carbon_immutable", nullable=false)
+     * @ORM\Column(name="occurredAt", type="carbon_immutable")
      */
     private CarbonImmutable $occurredAt;
 
