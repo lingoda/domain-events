@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\Domain\Model;
 
+use DateInterval;
+use DateTimeInterface;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;
 
 interface OutboxStore
@@ -17,7 +19,7 @@ interface OutboxStore
 
     public function publish(OutboxRecord $outboxRecord): void;
 
-    public function purgePublishedEvents(): void;
+    public function purgePublishedEvents(DateTimeInterface|DateInterval|null $before = null): void;
 
     /**
      * @return iterable<OutboxRecord>

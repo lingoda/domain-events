@@ -5,6 +5,9 @@ declare(strict_types = 1);
 namespace Lingoda\DomainEventsBundle\Infra\Doctrine;
 
 use Carbon\CarbonImmutable;
+use DateTime;
+use DateTimeInterface;
+use DateInterval;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
@@ -70,13 +73,20 @@ final class DoctrineOutboxStore implements OutboxStore
         $this->entityManager->flush();
     }
 
-    public function purgePublishedEvents(): void
+    public function purgePublishedEvents(DateTimeInterface|DateInterval|null $before = null): void
     {
         /**
          * @var OutboxRecordRepository $repo
          */
         $repo = $this->entityManager->getRepository(OutboxRecord::class);
-        $repo->purgePublishedEvents();
+
+        $before = match (true) {
+            $before instanceof DateTimeInterface => $before,
+            $before instanceof DateInterval => (new DateTime())->sub($before),
+            !$before => new DateTime(),
+        };
+
+        $repo->purgePublishedEvents($before);
     }
 
     /**
