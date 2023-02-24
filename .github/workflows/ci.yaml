@@ -28,6 +28,7 @@ jobs:
                   php-version: '8.1'
                   extensions: apcu, redis
                   dependency-versions: "${{ matrix.dependencies }}"
+                  coverage: none
 
             - name: composer
               uses: ramsey/composer-install@2.2.0
