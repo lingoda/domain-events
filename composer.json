@@ -9,7 +9,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.13",
         "dunglas/doctrine-json-odm": "^1.2",
-        "nesbot/carbon": "^2.62",
+        "nesbot/carbon": "^2.66",
         "symfony/event-dispatcher": "^5.4 || ^6.1",
         "symfony/framework-bundle": "^5.4 || ^6.1",
         "symfony/lock": "^5.4 || ^6.1",
