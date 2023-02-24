@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                install-args: ['', --prefer-lowest]
+                install-args: ['', lowest]
             fail-fast: false
         steps:
             - name: cancel
@@ -27,6 +27,7 @@ jobs:
               with:
                   php-version: '8.1'
                   extensions: apcu, redis
+                  dependency-versions: "${{ matrix.dependencies }}"
 
             - name: composer
               uses: ramsey/composer-install@2.2.0
