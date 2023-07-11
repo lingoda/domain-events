@@ -5,6 +5,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "doctrine/annotations": "^2.0",
         "doctrine/dbal": "^3.4",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.13",

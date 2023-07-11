@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\Infra\Symfony\Messenger;
 
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\RoutableMessageBus;
 use Symfony\Component\Messenger\Stamp\BusNameStamp;
 
-final class OutboxMessageHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+final class OutboxMessageHandler
 {
     private RoutableMessageBus $routableMessageBus;
     private string $busName;

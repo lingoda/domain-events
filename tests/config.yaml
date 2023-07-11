@@ -6,12 +6,18 @@ doctrine:
                 url: 'sqlite:///:memory:'
                 profiling: true
                 charset: UTF8
-
+        types:
+            carbon_immutable: Carbon\Doctrine\CarbonImmutableType
     orm:
         default_entity_manager: default
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
+        mappings:
+           LingodaDomainEventsBundle:
+                type: annotation
+                prefix: Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\
+                dir: 'Infra/Doctrine/Entity'
 
 framework:
     messenger:
@@ -21,7 +27,33 @@ framework:
             messenger.bus.default:
                 default_middleware: allow_no_handlers
 
+    session:
+        handler_id: null
+        storage_factory_id: session.storage.factory.native
+
 services:
+    dunglas_doctrine_json_odm.normalizer.array:
+        class: Symfony\Component\Serializer\Normalizer\ArrayDenormalizer
+        public: true
+
+    dunglas_doctrine_json_odm.normalizer.carbon:
+        class: Lingoda\DomainEventsBundle\Infra\Serializer\CarbonNormalizer
+        public: true
+
+    dunglas_doctrine_json_odm.serializer:
+        autoconfigure: false
+        class: Dunglas\DoctrineJsonOdm\Serializer
+        arguments:
+            $normalizers:
+                - "@serializer.normalizer.uid"
+                - "@dunglas_doctrine_json_odm.normalizer.array"
+                - "@dunglas_doctrine_json_odm.normalizer.carbon"
+                - "@dunglas_doctrine_json_odm.normalizer.datetime"
+                - "@dunglas_doctrine_json_odm.normalizer.object"
+            $encoders:
+                - "@serializer.encoder.json"
+        public: true
+
     test.lingoda_domain_events.domain_event_dispatcher_service:
         alias: lingoda_domain_events.domain_event_dispatcher_service
         public: true

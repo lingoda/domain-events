@@ -82,7 +82,7 @@ final class DoctrineOutboxStore implements OutboxStore
 
         $before = match (true) {
             $before instanceof DateTimeInterface => $before,
-            $before instanceof DateInterval => (new DateTime())->sub($before),
+            $before instanceof DateInterval => (new CarbonImmutable())->sub($before),
             !$before => new DateTime(),
         };
 
