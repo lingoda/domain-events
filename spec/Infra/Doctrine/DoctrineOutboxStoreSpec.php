@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace spec\Lingoda\DomainEventsBundle\Infra\Doctrine;
 
 use Carbon\CarbonImmutable;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\UnitOfWork;
@@ -115,7 +116,7 @@ class DoctrineOutboxStoreSpec extends ObjectBehavior
         $entityManager->getRepository(OutboxRecord::class)->willReturn($outboxRecordRepo);
         $entityManager->getRepository(OutboxRecord::class)->shouldBeCalledOnce();
 
-        $outboxRecordRepo->purgePublishedEvents()->shouldBeCalledOnce();
+        $outboxRecordRepo->purgePublishedEvents(Argument::type(DateTime::class))->shouldBeCalledOnce();
 
         $this->purgePublishedEvents();
     }

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Lingoda\DomainEventsBundle\Tests;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Dunglas\DoctrineJsonOdm\Bundle\DunglasDoctrineJsonOdmBundle;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEventDispatcher;
 use Lingoda\DomainEventsBundle\Domain\Model\OutboxStore;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\DoctrineOutboxStore;
@@ -34,6 +35,7 @@ final class BundleInitializationTest extends KernelTestCase
         $kernel = parent::createKernel($options);
         $kernel->addTestBundle(LingodaDomainEventsBundle::class);
         $kernel->addTestBundle(DoctrineBundle::class);
+        $kernel->addTestBundle(DunglasDoctrineJsonOdmBundle::class);
         $kernel->addTestConfig(__DIR__ . '/config.yaml');
         $kernel->handleOptions($options);
 

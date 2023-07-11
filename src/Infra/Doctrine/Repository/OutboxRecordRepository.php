@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Repository;
 
 use Carbon\CarbonImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -28,11 +29,13 @@ class OutboxRecordRepository extends EntityRepository
         return (int) $query->execute();
     }
 
-    public function purgePublishedEvents(): void
+    public function purgePublishedEvents(DateTimeInterface $before): void
     {
         $this->createQueryBuilder('o')
             ->delete()
             ->where('o.publishedOn IS NOT NULL')
+            ->andWhere('o.publishedOn < :before')
+            ->setParameter('before', $before)
             ->getQuery()
             ->execute()
         ;
