@@ -13,7 +13,9 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                install-args: ['', --prefer-lowest]
+                php: [ '8.2', '8.3' ]
+                symfony: [ '6.4', '7.1' ]
+                install-args: ['', '--prefer-lowest --prefer-stable']
             fail-fast: false
         steps:
             - name: cancel
@@ -25,32 +27,28 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@2.19.0
               with:
-                  php-version: '8.1'
+                  php-version: ${{ matrix.php }}
                   extensions: apcu, redis
 
-            - name: composer
-              uses: ramsey/composer-install@2.1.0
-              with:
-                  composer-options: "--prefer-dist --classmap-authoritative"
+            - name: Composer update on PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
+              if: ${{ !cancelled() }}
+              run: |
+                  composer require --no-update symfony/flex symfony/dotenv
+                  composer config --no-plugins allow-plugins.symfony/flex true
+                  SYMFONY_REQUIRE=${{ matrix.symfony }} composer update --classmap-authoritative ${{ matrix.install-args }}
 
             - name: phpspec
+              if: ${{ !cancelled() }}
               run: |
                   vendor/bin/phpspec run
 
-            - name: phpstan-cache
-              uses: actions/cache@v3.0.3
-              with:
-                  key: phpstan-${{ github.ref }}-${{ github.sha }}
-                  path: .phpstan-cache
-                  restore-keys: |
-                      phpstan-${{ github.ref }}-
-                      phpstan-
-
             - name: phpstan
+              if: ${{ !cancelled() }}
               run: |
                   vendor/bin/phpstan analyze -c ./phpstan.neon
                   vendor/bin/phpstan analyze -c ./phpstan.test.neon
 
             - name: phpunit
+              if: ${{ !cancelled() }}
               run: |
                   vendor/bin/phpunit

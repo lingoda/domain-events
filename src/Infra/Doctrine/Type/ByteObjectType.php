@@ -5,12 +5,12 @@ namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Type;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Types\ObjectType;
+use Doctrine\DBAL\Types\JsonType;
 
 /**
  * Workaround for https://github.com/doctrine/orm/issues/4029
  */
-class ByteObjectType extends ObjectType
+class ByteObjectType extends JsonType
 {
     public const TYPE = 'byte_object';
 
@@ -21,7 +21,7 @@ class ByteObjectType extends ObjectType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
-        $value = parent::convertToDatabaseValue($value, $platform);
+        $value = (string) parent::convertToDatabaseValue($value, $platform);
 
         if (is_a($platform, PostgreSQLPlatform::class)) {
             $value = str_replace(chr(0), '\0', $value);

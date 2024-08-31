@@ -15,3 +15,8 @@ parameters:
             - Doctrine\ORM\ORMException
     excludePaths:
         - src/Domain/Model/Traits/*
+    ignoreErrors:
+        -
+            message: "#^Property Lingoda\\\\DomainEventsBundle\\\\Infra\\\\Doctrine\\\\Entity\\\\OutboxRecord\\:\\:\\$id is never written, only read\\.$#"
+            count: 1
+            path: src/Infra/Doctrine/Entity/OutboxRecord.php

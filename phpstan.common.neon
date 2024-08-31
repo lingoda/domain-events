@@ -12,3 +12,4 @@ parameters:
     checkExplicitMixedMissingReturn: true
     checkFunctionNameCase: true
     treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false

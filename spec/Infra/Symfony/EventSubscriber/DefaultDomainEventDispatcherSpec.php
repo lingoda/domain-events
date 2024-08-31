@@ -32,4 +32,17 @@ class DefaultDomainEventDispatcherSpec extends ObjectBehavior
 
         $this->dispatch($domainEvent);
     }
+
+    function it_fails_to_dispatch_domain_event(DomainEvent $domainEvent, MessageBusInterface $messageBus)
+    {
+        $messageBus
+            ->dispatch($domainEvent)
+            ->willThrow(\Exception::class)
+            ->shouldBeCalledOnce()
+        ;
+        $this
+            ->shouldThrow(new \RuntimeException('Failed to dispatch domain event'))
+            ->during('dispatch', [$domainEvent])
+        ;
+    }
 }

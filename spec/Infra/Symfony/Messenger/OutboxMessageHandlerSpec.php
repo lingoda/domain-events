@@ -15,9 +15,9 @@ use Symfony\Component\Messenger\Stamp\BusNameStamp;
 
 class OutboxMessageHandlerSpec extends ObjectBehavior
 {
-    function let(RoutableMessageBus $bus)
+    function let(RoutableMessageBus $messageBus)
     {
-        $this->beConstructedWith($bus, 'bus-name');
+        $this->beConstructedWith($messageBus, 'bus-name');
     }
 
     function it_is_initializable()
@@ -26,13 +26,13 @@ class OutboxMessageHandlerSpec extends ObjectBehavior
     }
 
     function it_can_handle_outbox_message(
-        RoutableMessageBus $bus,
+        RoutableMessageBus $messageBus,
         OutboxMessage $outboxMessage,
         DomainEvent $domainEvent
     ) {
         $outboxMessage->getDomainEvent()->willReturn($domainEvent);
 
-        $bus
+        $messageBus
             ->dispatch(Argument::that(function (Envelope $envelope) use ($domainEvent) {
                 return $envelope->getMessage() === $domainEvent->getWrappedObject()
                     && $envelope->last(BusNameStamp::class) instanceof BusNameStamp
@@ -43,6 +43,14 @@ class OutboxMessageHandlerSpec extends ObjectBehavior
             ->shouldBeCalledOnce()
         ;
 
-        $this($outboxMessage);
+        $this->__invoke($outboxMessage);
+    }
+
+    function it_fails_to_dispatch_domain_event(OutboxMessage $outboxMessage)
+    {
+        $this
+            ->shouldThrow(new \RuntimeException('Failed to dispatch domain event'))
+            ->during('__invoke', [$outboxMessage])
+        ;
     }
 }

@@ -11,6 +11,9 @@ use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
+/**
+ * @implements TransportFactoryInterface<OutboxTransport>
+ */
 class OutboxTransportFactory implements TransportFactoryInterface
 {
     private ManagerRegistry $managerRegistry;

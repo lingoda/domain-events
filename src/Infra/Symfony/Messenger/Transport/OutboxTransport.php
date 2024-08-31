@@ -26,6 +26,7 @@ final class OutboxTransport implements TransportInterface, MessageCountAwareInte
 
     public function __construct(EntityManagerInterface $entityManager)
     {
+        /** @var OutboxRecordRepository $outboxRecordRepo */
         $outboxRecordRepo = $entityManager->getRepository(OutboxRecord::class);
 
         $this->outboxRecordRepo = $outboxRecordRepo;
