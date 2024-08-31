@@ -15,7 +15,7 @@ jobs:
             matrix:
                 php: [ '8.1', '8.2', '8.3' ]
                 symfony: [ '5.4', '6.4', '7.1' ]
-                install-args: ['--prefer-dist', '--prefer-lowest']
+                install-args: ['', '--prefer-lowest --prefer-stable']
             fail-fast: false
         steps:
             - name: cancel
@@ -35,7 +35,7 @@ jobs:
               run: |
                   composer require --no-update symfony/flex
                   composer config --no-plugins allow-plugins.symfony/flex true
-                  SYMFONY_REQUIRE=${{ matrix.symfony }} composer install --classmap-authoritative ${{ matrix.install-args }}
+                  SYMFONY_REQUIRE=${{ matrix.symfony }} composer update --classmap-authoritative ${{ matrix.install-args }}
 
             - name: phpspec
               if: ${{ !cancelled() }}
