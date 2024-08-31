@@ -31,29 +31,24 @@ jobs:
                   extensions: apcu, redis
 
             - name: Composer update on PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
+              if: ${{ !cancelled() }}
               run: |
                   composer require --no-update symfony/flex
                   composer config --no-plugins allow-plugins.symfony/flex true
                   SYMFONY_REQUIRE=${{ matrix.symfony }} composer install --classmap-authoritative ${{ matrix.install-args }}
 
             - name: phpspec
+              if: ${{ !cancelled() }}
               run: |
                   vendor/bin/phpspec run
 
-            - name: phpstan-cache
-              uses: actions/cache@v3.0.3
-              with:
-                  key: phpstan-${{ github.ref }}-${{ github.sha }}
-                  path: .phpstan-cache
-                  restore-keys: |
-                      phpstan-${{ github.ref }}-
-                      phpstan-
-
             - name: phpstan
+              if: ${{ !cancelled() }}
               run: |
                   vendor/bin/phpstan analyze -c ./phpstan.neon
                   vendor/bin/phpstan analyze -c ./phpstan.test.neon
 
             - name: phpunit
+              if: ${{ !cancelled() }}
               run: |
                   vendor/bin/phpunit
