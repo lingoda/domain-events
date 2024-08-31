@@ -11,7 +11,7 @@ use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;
 use Lingoda\DomainEventsBundle\Infra\Symfony\LockableEventPublisher;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Lock\LockFactory;
-use Symfony\Component\Lock\LockInterface;
+use Symfony\Component\Lock\SharedLockInterface;
 
 class LockableEventPublisherSpec extends ObjectBehavior
 {
@@ -34,7 +34,7 @@ class LockableEventPublisherSpec extends ObjectBehavior
         LockFactory $lockFactory,
         OutboxRecord $outboxRecord,
         DomainEvent $domainEvent,
-        LockInterface $lock
+        SharedLockInterface $lock
     ) {
         $outboxRecord->getId()->willReturn(1);
         $outboxRecord->getDomainEvent()->willReturn($domainEvent);
