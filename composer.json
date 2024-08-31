@@ -5,18 +5,19 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "doctrine/dbal": "^3.3",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.15",
-        "doctrine/dbal": "^3.3",
         "nesbot/carbon": "^2.71 || ^3.0",
-        "symfony/event-dispatcher": "^6.4|^7.0",
-        "symfony/framework-bundle": "^6.4|^7.0",
-        "symfony/lock": "^6.4|^7.0",
-        "symfony/messenger": "^6.4|^7.0",
+        "symfony/event-dispatcher": "*",
+        "symfony/flex": "^2.4",
+        "symfony/framework-bundle": "*",
+        "symfony/lock": "*",
+        "symfony/messenger": "*",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
-        "nyholm/symfony-bundle-test": "^2.0",
+        "nyholm/symfony-bundle-test": "^3.0",
         "phpspec/phpspec": "^7.5",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.12",
@@ -24,7 +25,7 @@
         "phpstan/phpstan-symfony": "^1.4",
         "phpstan/phpstan-webmozart-assert": "^1.2",
         "phpunit/phpunit": "^9.6",
-        "symfony/phpunit-bridge": "^6.4|^7.0"
+        "symfony/phpunit-bridge": "*"
     },
     "autoload": {
         "psr-4": {
@@ -45,13 +46,20 @@
         },
         "sort-packages": true,
         "allow-plugins": {
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "symfony/flex": true
         }
     },
     "extra": {
         "symfony": {
             "allow-contrib": true,
             "require": "^6.4|^7.0"
+        }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         }
     }
 }
