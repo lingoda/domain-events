@@ -13,7 +13,9 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                install-args: ['', --prefer-lowest]
+                php: [ '8.1', '8.2', '8.3' ]
+                symfony: [ '5.4', '6.4', '7.1' ]
+                install-args: ['--prefer-dist', '--prefer-lowest']
             fail-fast: false
         steps:
             - name: cancel
@@ -25,13 +27,14 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@2.19.0
               with:
-                  php-version: '8.1'
+                  php-version: ${{ matrix.php }}
                   extensions: apcu, redis
 
-            - name: composer
-              uses: ramsey/composer-install@2.1.0
-              with:
-                  composer-options: "--prefer-dist --classmap-authoritative"
+            - name: Composer update on PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
+              run: |
+                  composer require --no-update symfony/flex
+                  composer config --no-plugins allow-plugins.symfony/flex true
+                  SYMFONY_REQUIRE=${{ matrix.symfony }} composer install --classmap-authoritative ${{ matrix.install-args }}
 
             - name: phpspec
               run: |

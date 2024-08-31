@@ -6,6 +6,7 @@ namespace Lingoda\DomainEventsBundle\Infra\Symfony\EventSubscriber;
 
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEventDispatcher;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
@@ -20,6 +21,9 @@ class DefaultDomainEventDispatcher implements DomainEventDispatcher
         $this->eventBus = $eventBus;
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     public function dispatch(DomainEvent $domainEvent): void
     {
         $this->eventBus->dispatch($domainEvent);
