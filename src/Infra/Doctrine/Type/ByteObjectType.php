@@ -21,7 +21,7 @@ class ByteObjectType extends JsonType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
-        $value = parent::convertToDatabaseValue($value, $platform);
+        $value = (string) parent::convertToDatabaseValue($value, $platform);
 
         if (is_a($platform, PostgreSQLPlatform::class)) {
             $value = str_replace(chr(0), '\0', $value);

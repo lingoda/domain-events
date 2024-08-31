@@ -23,11 +23,15 @@ final class OutboxMessageHandler
 
     public function __invoke(OutboxMessage $outboxMessage): void
     {
-        $this->routableMessageBus->dispatch(
-            Envelope::wrap($outboxMessage->getDomainEvent())
-                ->with(
-                    new BusNameStamp($this->busName)
-                )
-        );
+        try {
+            $this->routableMessageBus->dispatch(
+                Envelope::wrap($outboxMessage->getDomainEvent())
+                    ->with(
+                        new BusNameStamp($this->busName)
+                    )
+            );
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Failed to dispatch domain event', 0, $e);
+        }
     }
 }

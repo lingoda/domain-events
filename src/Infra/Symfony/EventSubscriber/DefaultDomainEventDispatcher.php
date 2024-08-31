@@ -20,8 +20,15 @@ class DefaultDomainEventDispatcher implements DomainEventDispatcher
         $this->eventBus = $eventBus;
     }
 
+    /**
+     * @throws \RuntimeException
+     */
     public function dispatch(DomainEvent $domainEvent): void
     {
-        $this->eventBus->dispatch($domainEvent);
+        try {
+            $this->eventBus->dispatch($domainEvent);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Failed to dispatch domain event', 0, $e);
+        }
     }
 }
