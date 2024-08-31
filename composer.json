@@ -24,6 +24,7 @@
         "phpstan/phpstan-symfony": "^1.4",
         "phpstan/phpstan-webmozart-assert": "^1.2",
         "phpunit/phpunit": "^9.6",
+        "rector/rector": "^1.2",
         "symfony/phpunit-bridge": "^6.4|^7.0"
     },
     "autoload": {

@@ -10,47 +10,32 @@ use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Repository\OutboxRecordRepository;
 use Webmozart\Assert\Assert;
 
-/**
- * @ORM\Entity(repositoryClass=OutboxRecordRepository::class)
- * @ORM\Table(name=self::TABLE_NAME, indexes={
- *     @ORM\Index(name="entity_type_published_idx", columns={"entityId", "eventType", "publishedOn"}),
- *     @ORM\Index(name="occurred_published_idx", columns={"occurredAt", "publishedOn"}),
- * })
- */
+#[ORM\Entity(repositoryClass: OutboxRecordRepository::class)]
+#[ORM\Table(name: self::TABLE_NAME)]
+#[ORM\Index(name: 'entity_type_published_idx', columns: ['entityId', 'eventType', 'publishedOn'])]
+#[ORM\Index(name: 'occurred_published_idx', columns: ['occurredAt', 'publishedOn'])]
 class OutboxRecord
 {
     public const TABLE_NAME = 'outbox';
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private string $id;
 
-    /**
-     * @ORM\Column(name="eventType", type="string", nullable=false)
-     */
+    #[ORM\Column(name: 'eventType', type: 'string', nullable: false)]
     private string $eventType;
 
-    /**
-     * @ORM\Column(name="domainEvent", type="byte_object", nullable=false)
-     */
+    #[ORM\Column(name: 'domainEvent', type: 'byte_object', nullable: false)]
     private object $domainEvent;
 
-    /**
-     * @ORM\Column(name="entityId", type="string", length=36, nullable=false)
-     */
+    #[ORM\Column(name: 'entityId', type: 'string', length: 36, nullable: false)]
     private string $entityId;
 
-    /**
-     * @ORM\Column(name="occurredAt", type="carbon_immutable", nullable=false)
-     */
+    #[ORM\Column(name: 'occurredAt', type: 'carbon_immutable', nullable: false)]
     private CarbonImmutable $occurredAt;
 
-    /**
-     * @ORM\Column(name="publishedOn", type="carbon_immutable", nullable=true)
-     */
+    #[ORM\Column(name: 'publishedOn', type: 'carbon_immutable', nullable: true)]
     private ?CarbonImmutable $publishedOn;
 
     public function __construct(
