@@ -25,8 +25,6 @@ class OutboxRecord
      * @ORM\Id
      * @ORM\Column(name="id", type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @phpstan-ignore-next-line
      */
     private string $id;
 

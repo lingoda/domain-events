@@ -8,7 +8,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.15",
         "doctrine/dbal": "^3.3",
-        "nesbot/carbon": "^2.48 || ^3.0",
+        "nesbot/carbon": "^2.71 || ^3.0",
         "symfony/event-dispatcher": "^6.4 || ^7.0",
         "symfony/framework-bundle": "^6.4 || ^7.0",
         "symfony/lock": "^6.4 || ^7.0",
