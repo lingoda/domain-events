@@ -33,8 +33,6 @@ jobs:
             - name: Composer update on PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
               if: ${{ !cancelled() }}
               run: |
-                  composer require --no-update symfony/flex
-                  composer config --no-plugins allow-plugins.symfony/flex true
                   SYMFONY_REQUIRE=${{ matrix.symfony }} composer update --classmap-authoritative ${{ matrix.install-args }}
 
             - name: phpspec
