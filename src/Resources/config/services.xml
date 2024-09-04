@@ -26,7 +26,7 @@
                  class="Lingoda\DomainEventsBundle\Infra\Doctrine\EventSubscriber\PersistDomainEventsSubscriber"
                  public="false">
             <argument type="service" id="lingoda_domain_events.repository.outbox_store_doctrine"/>
-            <tag name="doctrine.event_subscriber" connection="default" priority="-1000"/>
+            <tag name="doctrine.event_listener" event="preFlush" connection="default" priority="-1000"/>
         </service>
 
         <service id="lingoda_domain_events.repository.outbox_store_doctrine"

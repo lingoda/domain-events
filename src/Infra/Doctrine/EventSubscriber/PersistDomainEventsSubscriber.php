@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\Infra\Doctrine\EventSubscriber;
 
-use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreFlushEventArgs;
-use Doctrine\ORM\Events;
 use Lingoda\DomainEventsBundle\Domain\Model\ContainsEvents;
 use Lingoda\DomainEventsBundle\Domain\Model\OutboxStore;
 use Lingoda\DomainEventsBundle\Domain\Model\ReplaceableDomainEvent;
@@ -14,7 +12,7 @@ use Lingoda\DomainEventsBundle\Domain\Model\ReplaceableDomainEvent;
 /**
  * Doctrine entity listener stores recorded events in the outbox store
  */
-final class PersistDomainEventsSubscriber implements EventSubscriber
+final class PersistDomainEventsSubscriber
 {
     private OutboxStore $outboxStore;
 
@@ -23,14 +21,9 @@ final class PersistDomainEventsSubscriber implements EventSubscriber
         $this->outboxStore = $outboxStore;
     }
 
-    public function getSubscribedEvents(): array
-    {
-        return [Events::preFlush];
-    }
-
     public function preFlush(PreFlushEventArgs $eventArgs): void
     {
-        $uow = $eventArgs->getEntityManager()->getUnitOfWork();
+        $uow = $eventArgs->getObjectManager()->getUnitOfWork();
 
         foreach ($uow->getIdentityMap() as $entities) {
             $this->persistRecordedEventsFromEntities($entities);
