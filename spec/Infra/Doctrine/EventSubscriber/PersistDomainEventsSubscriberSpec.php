@@ -6,7 +6,6 @@ namespace spec\Lingoda\DomainEventsBundle\Infra\Doctrine\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PreFlushEventArgs;
-use Doctrine\ORM\Events;
 use Doctrine\ORM\UnitOfWork;
 use Lingoda\DomainEventsBundle\Domain\Model\ContainsEvents;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
@@ -25,13 +24,6 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(PersistDomainEventsSubscriber::class);
-    }
-
-    function it_listens_to_events()
-    {
-        $this->getSubscribedEvents()->shouldBeEqualTo([
-            Events::preFlush,
-        ]);
     }
 
     function it_can_persist_domain_events(
@@ -64,7 +56,7 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
         ]);
 
         $entityManager->getUnitOfWork()->willReturn($unitOfWork);
-        $preFlushEventArgs->getEntityManager()->willReturn($entityManager);
+        $preFlushEventArgs->getObjectManager()->willReturn($entityManager);
 
         $insertedEntity->clearRecordedEvents()->shouldBeCalledOnce();
         $insertedEntity->getRecordedEvents()->willReturn([$domainEvent, $replaceableDomainEvent]);
@@ -102,7 +94,7 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
         $unitOfWork->getScheduledEntityInsertions()->willReturn([]);
 
         $entityManager->getUnitOfWork()->willReturn($unitOfWork);
-        $preFlushEventArgs->getEntityManager()->willReturn($entityManager);
+        $preFlushEventArgs->getObjectManager()->willReturn($entityManager);
 
         $updatedEntity->clearRecordedEvents()->shouldBeCalledOnce();
         $updatedEntity->getRecordedEvents()->willReturn([$domainEvent]);
@@ -131,7 +123,7 @@ class PersistDomainEventsSubscriberSpec extends ObjectBehavior
         ]);
 
         $entityManager->getUnitOfWork()->willReturn($unitOfWork);
-        $preFlushEventArgs->getEntityManager()->willReturn($entityManager);
+        $preFlushEventArgs->getObjectManager()->willReturn($entityManager);
 
         $scheduledInsertEntity->clearRecordedEvents()->shouldBeCalledOnce();
         $scheduledInsertEntity->getRecordedEvents()->willReturn([$domainEvent]);
