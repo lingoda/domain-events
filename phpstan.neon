@@ -20,3 +20,5 @@ parameters:
             message: "#^Property Lingoda\\\\DomainEventsBundle\\\\Infra\\\\Doctrine\\\\Entity\\\\OutboxRecord\\:\\:\\$id is never written, only read\\.$#"
             count: 1
             path: src/Infra/Doctrine/Entity/OutboxRecord.php
+        # Symfony Config TreeBuilder returns NodeDefinition, but children() is on ArrayNodeDefinition
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::\w+\(\)\.#'
