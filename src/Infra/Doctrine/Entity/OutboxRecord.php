@@ -13,7 +13,7 @@ use Webmozart\Assert\Assert;
 #[ORM\Entity(repositoryClass: OutboxRecordRepository::class)]
 #[ORM\Table(name: self::TABLE_NAME)]
 #[ORM\Index(name: 'entity_type_published_idx', columns: ['entityId', 'eventType', 'publishedOn'])]
-#[ORM\Index(name: 'occurred_published_idx', columns: ['occurredAt', 'publishedOn'])]
+#[ORM\Index(name: 'idx_unpublished_occurred', columns: ['publishedOn', 'occurredAt'])]
 class OutboxRecord
 {
     public const TABLE_NAME = 'outbox';
