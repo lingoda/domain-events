@@ -135,6 +135,35 @@ framework:
       Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\OutboxMessage: outbox
 ```
 
+#### Skip Locked
+
+When running multiple consumers concurrently, you can enable `SKIP LOCKED` to avoid row contention.
+Instead of consumers blocking each other on locked rows, each consumer will skip already-locked rows and pick the next available one.
+
+This requires MySQL 8.0+ or PostgreSQL 9.5+.
+
+Enable it via the DSN:
+
+```yaml
+framework:
+  messenger:
+    transports:
+      outbox:
+        dsn: 'outbox://default?skip_locked=true'
+```
+
+Or via transport options:
+
+```yaml
+framework:
+  messenger:
+    transports:
+      outbox:
+        dsn: 'outbox://default'
+        options:
+          skip_locked: true
+```
+
 After that we can consume the Outbox table and dispatch domain events from it with the below command
 
 ```bash
@@ -197,6 +226,5 @@ vendor/bin/phpspec run
 ## TODO
 
 - Add functional tests
-- Improve OutboxTransportFactory with additional options in the DSN
 - Add instructions for doctrine mapping and routing DomainEvent
 - Fix issues around Carbon serialization
