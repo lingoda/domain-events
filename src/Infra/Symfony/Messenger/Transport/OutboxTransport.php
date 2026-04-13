@@ -23,21 +23,23 @@ final class OutboxTransport implements TransportInterface, MessageCountAwareInte
     private int $retryingSafetyCounter = 0;
     private EntityManagerInterface $entityManager;
     private OutboxRecordRepository $outboxRecordRepo;
+    private bool $skipLocked;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, bool $skipLocked = false)
     {
         /** @var OutboxRecordRepository $outboxRecordRepo */
         $outboxRecordRepo = $entityManager->getRepository(OutboxRecord::class);
 
         $this->outboxRecordRepo = $outboxRecordRepo;
         $this->entityManager = $entityManager;
+        $this->skipLocked = $skipLocked;
     }
 
     public function get(): iterable
     {
         $this->entityManager->beginTransaction();
         try {
-            $outboxRecord = $this->outboxRecordRepo->fetchNextRecordForUpdate();
+            $outboxRecord = $this->outboxRecordRepo->fetchNextRecordForUpdate($this->skipLocked);
             if ($outboxRecord) {
                 $outboxRecord->setPublishedOn(CarbonImmutable::now());
             }

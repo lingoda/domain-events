@@ -37,10 +37,20 @@ class OutboxTransportFactory implements TransportFactoryInterface
             throw new InvalidArgumentException(sprintf('Missing host segment in the DSN "%s".', $dsn));
         }
 
+        $query = [];
+        if (isset($components['query'])) {
+            parse_str($components['query'], $query);
+        }
+
+        $skipLocked = filter_var(
+            $options['skip_locked'] ?? $query['skip_locked'] ?? false,
+            FILTER_VALIDATE_BOOLEAN,
+        );
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->managerRegistry->getManager($components['host']);
 
-        return new OutboxTransport($entityManager);
+        return new OutboxTransport($entityManager, $skipLocked);
     }
 
     /**

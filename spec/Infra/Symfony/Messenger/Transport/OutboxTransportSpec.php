@@ -125,7 +125,40 @@ class OutboxTransportSpec extends ObjectBehavior
         $entityManager->commit()->shouldBeCalledTimes(2);
         $entityManager->flush()->shouldBeCalledTimes(2);
 
-        $outboxRecordRepository->fetchNextRecordForUpdate()
+        $outboxRecordRepository->fetchNextRecordForUpdate(false)
+            ->willReturn(null, $outboxRecord->getWrappedObject())
+            ->shouldBeCalled()
+        ;
+
+        // fetching empty database
+        $this->get()->shouldBeEqualTo([]);
+
+        // fetching a record
+        $outboxRecord->getId()->willReturn(1)->shouldBeCalled();
+        $outboxRecord->getDomainEvent()->willReturn($domainEvent)->shouldBeCalled();
+        $outboxRecord
+            ->setPublishedOn(Argument::that(fn (CarbonImmutable $now) => $now->eq(CarbonImmutable::now())))
+            ->shouldBeCalledOnce()
+        ;
+
+        $records = $this->get();
+        $records->shouldHaveCount(1);
+        $records[0]->shouldBeOutboxEnvelope($outboxRecord);
+    }
+
+    function it_can_get_record_with_skip_locked(
+        EntityManagerInterface $entityManager,
+        OutboxRecordRepository $outboxRecordRepository,
+        OutboxRecord $outboxRecord,
+        DomainEvent $domainEvent
+    ) {
+        $this->beConstructedWith($entityManager, true);
+
+        $entityManager->beginTransaction()->shouldBeCalledTimes(2);
+        $entityManager->commit()->shouldBeCalledTimes(2);
+        $entityManager->flush()->shouldBeCalledTimes(2);
+
+        $outboxRecordRepository->fetchNextRecordForUpdate(true)
             ->willReturn(null, $outboxRecord->getWrappedObject())
             ->shouldBeCalled()
         ;

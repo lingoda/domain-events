@@ -7,7 +7,9 @@ namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Repository;
 use Carbon\CarbonImmutable;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Query\SkipLockedSqlWalker;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;
 use Webmozart\Assert\Assert;
 
@@ -38,7 +40,7 @@ class OutboxRecordRepository extends EntityRepository
         ;
     }
 
-    public function fetchNextRecordForUpdate(): ?OutboxRecord
+    public function fetchNextRecordForUpdate(bool $skipLocked = false): ?OutboxRecord
     {
         $query = $this->createAvailableMessagesQueryBuilder()
             ->orderBy('o.occurredAt', 'ASC')
@@ -48,6 +50,10 @@ class OutboxRecordRepository extends EntityRepository
 
         // use SELECT ... FOR UPDATE to lock table
         $query->setLockMode(LockMode::PESSIMISTIC_WRITE);
+
+        if ($skipLocked) {
+            $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, SkipLockedSqlWalker::class);
+        }
 
         $record = $query->getOneOrNullResult();
         Assert::nullOrIsInstanceOf($record, OutboxRecord::class);
