@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace spec\Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\Transport;
 
 use Carbon\CarbonImmutable;
-use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Exception\InvalidArgumentException as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;

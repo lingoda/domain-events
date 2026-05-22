@@ -2,26 +2,20 @@
 
 namespace Lingoda\DomainEventsBundle\Infra\Doctrine\Type;
 
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Types\ObjectType;
+use Doctrine\DBAL\Types\BlobType;
 
 /**
  * Workaround for https://github.com/doctrine/orm/issues/4029
  */
-class ByteObjectType extends ObjectType
+class ByteObjectType extends BlobType
 {
     public const TYPE = 'byte_object';
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
-    {
-        return $platform->getBlobTypeDeclarationSQL($column);
-    }
-
     public function convertToDatabaseValue($value, AbstractPlatform $platform): string
     {
-        $value = (string) parent::convertToDatabaseValue($value, $platform);
+        $value = serialize($value);
 
         if (is_a($platform, PostgreSQLPlatform::class)) {
             $value = str_replace(chr(0), '\0', $value);
@@ -42,12 +36,21 @@ class ByteObjectType extends ObjectType
             $value = str_replace('\0', chr(0), $value);
         }
 
-        return parent::convertToPHPValue($value, $platform);
-    }
+        set_error_handler(static function (int $code, string $message): bool {
+            throw new \UnexpectedValueException(sprintf('Could not unserialize %s value: %s', self::TYPE, $message));
+        });
 
-    public function getBindingType(): int
-    {
-        return ParameterType::LARGE_OBJECT;
+        try {
+            $unserialized = unserialize($value);
+        } finally {
+            restore_error_handler();
+        }
+
+        if ($unserialized !== null && !is_object($unserialized)) {
+            throw new \UnexpectedValueException(sprintf('Expected %s to deserialize to an object, got %s', self::TYPE, get_debug_type($unserialized)));
+        }
+
+        return $unserialized;
     }
 
     public function getName(): string

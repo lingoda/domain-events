@@ -21,7 +21,7 @@ class OutboxRecord
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: 'bigint')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    private string $id;
+    private int|string $id;
 
     #[ORM\Column(name: 'eventType', type: 'string', nullable: false)]
     private string $eventType;

@@ -12,7 +12,8 @@ parameters:
             - RuntimeException # https://www.php.net/manual/en/class.runtimeexception.php
             - LogicException # https://www.php.net/manual/en/class.logicexception.php
             - Doctrine\DBAL\Exception
-            - Doctrine\ORM\ORMException
+            - Doctrine\ORM\ORMException # ORM 2.x
+            - Doctrine\ORM\Exception\ORMException # ORM 3.x
     excludePaths:
         - src/Domain/Model/Traits/*
     ignoreErrors:

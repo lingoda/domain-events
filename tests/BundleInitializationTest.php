@@ -4,63 +4,86 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\Tests;
 
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Lingoda\DomainEventsBundle\Domain\Model\DomainEventDispatcher;
+use Doctrine\DBAL\Types\Type;
+use Lingoda\DomainEventsBundle\DependencyInjection\LingodaDomainEventsExtension;
 use Lingoda\DomainEventsBundle\Domain\Model\OutboxStore;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\DoctrineOutboxStore;
 use Lingoda\DomainEventsBundle\Infra\Doctrine\EventSubscriber\PersistDomainEventsSubscriber;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Type\ByteObjectType;
+use Lingoda\DomainEventsBundle\Infra\Symfony\EventSubscriber\DefaultDomainEventDispatcher;
 use Lingoda\DomainEventsBundle\Infra\Symfony\EventSubscriber\PublishDomainEventsSubscriber;
 use Lingoda\DomainEventsBundle\Infra\Symfony\LockableEventPublisher;
 use Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\OutboxMessageHandler;
 use Lingoda\DomainEventsBundle\Infra\Symfony\Messenger\Transport\OutboxTransportFactory;
 use Lingoda\DomainEventsBundle\LingodaDomainEventsBundle;
-use Nyholm\BundleTest\TestKernel;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\HttpKernel\KernelInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class BundleInitializationTest extends KernelTestCase
+final class BundleInitializationTest extends TestCase
 {
-    protected static function getKernelClass(): string
+    public function testExtensionRegistersExpectedDefinitions(): void
     {
-        return TestKernel::class;
-    }
+        $container = $this->buildContainer();
 
-    /**
-     * @param array{environment?: string, debug?: mixed} $options
-     */
-    protected static function createKernel(array $options = []): KernelInterface
-    {
-        /** @var TestKernel $kernel */
-        $kernel = parent::createKernel($options);
-        $kernel->addTestBundle(LingodaDomainEventsBundle::class);
-        $kernel->addTestBundle(DoctrineBundle::class);
-        $kernel->addTestConfig(__DIR__ . '/config.yaml');
-        $kernel->handleOptions($options);
-
-        return $kernel;
-    }
-
-    public function testInitBundle(): void
-    {
-        $kernel = self::bootKernel();
-        $container = $kernel->getContainer();
-
-        // Test if services exists
-        $services = [
-            'test.lingoda_domain_events.domain_event_dispatcher_service' => DomainEventDispatcher::class,
-            'test.lingoda_domain_events.event_subscriber.publisher' => PublishDomainEventsSubscriber::class,
-            'test.lingoda_domain_events.event_subscriber.persister' => PersistDomainEventsSubscriber::class,
-            'test.lingoda_domain_events.lockable_event_publisher' => LockableEventPublisher::class,
-            'test.lingoda_domain_events.messenger.transport.outbox.factory' => OutboxTransportFactory::class,
-            'test.lingoda_domain_events.outbox_message_handler' => OutboxMessageHandler::class,
-            'test.lingoda_domain_events.repository.outbox_store_doctrine' => DoctrineOutboxStore::class,
-            'test.lingoda_domain_events.repository.outbox_store' => OutboxStore::class,
+        $expected = [
+            'lingoda_domain_events.domain_event_dispatcher_service'   => DefaultDomainEventDispatcher::class,
+            'lingoda_domain_events.event_subscriber.publisher'        => PublishDomainEventsSubscriber::class,
+            'lingoda_domain_events.event_subscriber.persister'        => PersistDomainEventsSubscriber::class,
+            'lingoda_domain_events.lockable_event_publisher'          => LockableEventPublisher::class,
+            'lingoda_domain_events.repository.outbox_store_doctrine'  => DoctrineOutboxStore::class,
+            'lingoda_domain_events.messenger.transport.outbox.factory' => OutboxTransportFactory::class,
+            'lingoda_domain_events.outbox_message_handler'            => OutboxMessageHandler::class,
         ];
 
-        foreach ($services as $id => $class) {
-            self::assertTrue($container->has($id));
-            $service = $container->get($id);
-            self::assertInstanceOf($class, $service);
+        foreach ($expected as $id => $class) {
+            self::assertTrue($container->hasDefinition($id), "Missing definition: $id");
+            self::assertSame($class, $container->getDefinition($id)->getClass());
         }
+    }
+
+    public function testExtensionRegistersExpectedAliases(): void
+    {
+        $container = $this->buildContainer();
+
+        $aliases = [
+            OutboxStore::class                              => 'lingoda_domain_events.repository.outbox_store_doctrine',
+            'lingoda_domain_events.lock_factory_service'    => 'lock.factory',
+            'lingoda_domain_events.event_publisher'         => 'lingoda_domain_events.lockable_event_publisher',
+        ];
+
+        foreach ($aliases as $alias => $target) {
+            self::assertTrue($container->hasAlias($alias), "Missing alias: $alias");
+            self::assertSame($target, (string) $container->getAlias($alias));
+        }
+    }
+
+    public function testPersisterIsTaggedAsDoctrineEventListener(): void
+    {
+        $container = $this->buildContainer();
+
+        self::assertSame(
+            [['event' => 'preFlush', 'connection' => 'default', 'priority' => -1000]],
+            $container->getDefinition('lingoda_domain_events.event_subscriber.persister')
+                ->getTag('doctrine.event_listener'),
+        );
+    }
+
+    public function testBundleConstructorRegistersByteObjectType(): void
+    {
+        new LingodaDomainEventsBundle();
+
+        self::assertTrue(Type::hasType(ByteObjectType::TYPE));
+        self::assertInstanceOf(ByteObjectType::class, Type::getType(ByteObjectType::TYPE));
+    }
+
+    private function buildContainer(): ContainerBuilder
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.environment', 'test');
+        $container->setParameter('kernel.debug', true);
+
+        (new LingodaDomainEventsExtension())->load([], $container);
+
+        return $container;
     }
 }

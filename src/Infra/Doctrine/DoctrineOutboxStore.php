@@ -91,7 +91,7 @@ final class DoctrineOutboxStore implements OutboxStore
         }
 
         try {
-            $schemaManager = $connection->getSchemaManager();
+            $schemaManager = $connection->createSchemaManager();
             if (!$schemaManager->tablesExist([OutboxRecord::TABLE_NAME])) {
                 return [];
             }
