@@ -23,3 +23,8 @@ parameters:
             path: src/Infra/Doctrine/Entity/OutboxRecord.php
         # Symfony Config TreeBuilder returns NodeDefinition, but children() is on ArrayNodeDefinition
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::\w+\(\)\.#'
+        # Symfony Config 8 made TreeBuilder a templated class; the default type parameter is
+        # 'array', which is what we use, so there's no real generic info to add.
+        -
+            identifier: missingType.generics
+            path: src/DependencyInjection/Configuration.php
