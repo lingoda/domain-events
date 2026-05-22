@@ -9,13 +9,13 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class SkipLockedSqlWalker extends SqlWalker
 {
-    /**
-     * @return string
-     */
-    public function walkSelectStatement(AST\SelectStatement $AST)
+    public function walkSelectStatement(AST\SelectStatement $AST): string
     {
-        $sql = parent::walkSelectStatement($AST);
+        return self::appendSkipLockedHint(parent::walkSelectStatement($AST));
+    }
 
+    public static function appendSkipLockedHint(string $sql): string
+    {
         if (str_contains($sql, 'FOR UPDATE')) {
             $sql .= ' SKIP LOCKED';
         }

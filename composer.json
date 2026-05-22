@@ -5,9 +5,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "doctrine/dbal": "^3.4",
-        "doctrine/doctrine-bundle": "^2.8",
-        "doctrine/orm": "^2.15",
+        "doctrine/dbal": "^3.4 || ^4.0",
+        "doctrine/doctrine-bundle": "^2.14",
+        "doctrine/orm": "^2.15 || ^3.0",
         "nesbot/carbon": "^2.71 || ^3.0",
         "symfony/event-dispatcher": "^6.4|^7.0|^8.0",
         "symfony/framework-bundle": "^6.4|^7.0|^8.0",
@@ -16,14 +16,14 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
-        "nyholm/symfony-bundle-test": "^3.0",
         "phpspec/phpspec": "^7.5 || ^8.0",
+        "phpspec/prophecy": "^1.23",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
         "phpstan/phpstan-webmozart-assert": "^2.0",
-        "phpunit/phpunit": "^9.6",
+        "phpunit/phpunit": "^9.6.20",
         "rector/rector": "^2.0",
         "symfony/phpunit-bridge": "^6.4|^7.0|^8.0"
     },
@@ -47,6 +47,9 @@
         "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true
+        },
+        "audit": {
+            "block-insecure": false
         }
     },
     "extra": {
