@@ -6,7 +6,7 @@
     "require": {
         "php": "^8.3",
         "doctrine/dbal": "^3.4 || ^4.0",
-        "doctrine/doctrine-bundle": "^2.14",
+        "doctrine/doctrine-bundle": "^2.14 || ^3.0",
         "doctrine/orm": "^2.15 || ^3.0",
         "nesbot/carbon": "^2.71 || ^3.0",
         "symfony/event-dispatcher": "^6.4|^7.0|^8.0",
