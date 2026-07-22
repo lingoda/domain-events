@@ -64,10 +64,9 @@ class OutboxRecordRepository extends EntityRepository
     public function getRecordCount(): int
     {
         return (int) $this->createAvailableMessagesQueryBuilder()
-            ->select('COUNT(o.id) as record_count')
+            ->select('COUNT(o.id)')
             ->getQuery()
-            ->setMaxResults(1)
-            ->getSingleColumnResult()
+            ->getSingleScalarResult()
         ;
     }
 
