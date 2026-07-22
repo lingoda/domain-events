@@ -32,7 +32,9 @@ abstract class InMemoryDatabaseTestCase extends TestCase
             [\dirname(__DIR__) . '/src/Infra/Doctrine/Entity'],
             true,
         );
-        if (\method_exists($config, 'enableNativeLazyObjects')) {
+        // native lazy objects need PHP >= 8.4; on older PHP the ORM falls back
+        // to var-exporter LazyGhost proxies without any opt-in
+        if (\PHP_VERSION_ID >= 80400 && \method_exists($config, 'enableNativeLazyObjects')) {
             $config->enableNativeLazyObjects(true);
         }
         $connection = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true], $config);
