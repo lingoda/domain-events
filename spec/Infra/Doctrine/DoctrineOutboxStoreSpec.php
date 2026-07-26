@@ -87,6 +87,7 @@ class DoctrineOutboxStoreSpec extends ObjectBehavior
                 'entityId' => 'replaceable-entity-id',
                 'eventType' => \get_class($replaceableDomainEvent->getWrappedObject()),
                 'publishedOn' => null,
+                'claimedAt' => null,
             ])
             ->willReturn([$outboxRecord])
             ->shouldBeCalledOnce()

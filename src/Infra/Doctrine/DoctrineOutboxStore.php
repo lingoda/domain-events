@@ -52,6 +52,10 @@ final class DoctrineOutboxStore implements OutboxStore
                 'entityId' => $domainEvent->getEntityId(),
                 'eventType' => \get_class($domainEvent),
                 'publishedOn' => null,
+                // a claimed record belongs to the messenger transport, which is relaying it
+                // right now: removing it here would not stop the relay, it would only lose the
+                // row the transport is about to confirm
+                'claimedAt' => null,
             ]);
 
             foreach ($replaceableEvents as $replaceableEvent) {
@@ -105,6 +109,10 @@ final class DoctrineOutboxStore implements OutboxStore
             ->select('o')
             ->from(OutboxRecord::class, 'o')
             ->where('o.publishedOn IS NULL')
+            // a claimed record is already being relayed by a messenger transport, which will
+            // confirm it, hand it back on a graceful stop, or let its lease expire. Publishing
+            // it here as well would emit the domain event twice.
+            ->andWhere('o.claimedAt IS NULL')
             ->andWhere('o.occurredAt < :now')
             ->orderBy('o.occurredAt')
             ->setParameter('now', $now)

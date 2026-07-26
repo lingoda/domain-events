@@ -50,5 +50,5 @@ repos:
         name: domain-events tests phpstan
         language: system
         entry: vendor/bin/phpstan analyse
-        args: ['-c', './phpstan.tests.neon']
+        args: ['-c', './phpstan.test.neon']
         files: ^tests\/.*\.php$

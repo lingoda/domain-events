@@ -47,10 +47,60 @@ class OutboxTransportFactory implements TransportFactoryInterface
             FILTER_VALIDATE_BOOLEAN,
         );
 
+        $prune = filter_var(
+            $options['prune'] ?? $query['prune'] ?? false,
+            FILTER_VALIDATE_BOOLEAN,
+        );
+
+        $batchSize = filter_var(
+            $options['batch_size'] ?? $query['batch_size'] ?? 1,
+            FILTER_VALIDATE_INT,
+        );
+        if (false === $batchSize || $batchSize < 1) {
+            throw new InvalidArgumentException(
+                sprintf('The "batch_size" option of the DSN "%s" must be an integer greater than 0.', $dsn)
+            );
+        }
+
+        $consumerBus = $options['consumer_bus'] ?? $query['consumer_bus'] ?? null;
+        if (null !== $consumerBus && (!\is_string($consumerBus) || '' === $consumerBus)) {
+            throw new InvalidArgumentException(
+                sprintf('The "consumer_bus" option of the DSN "%s" must be a non-empty string.', $dsn)
+            );
+        }
+
+        $leaseSeconds = filter_var(
+            $options['lease'] ?? $query['lease'] ?? 300,
+            FILTER_VALIDATE_INT,
+        );
+        if (false === $leaseSeconds || $leaseSeconds < 1) {
+            throw new InvalidArgumentException(
+                sprintf('The "lease" option of the DSN "%s" must be a number of seconds greater than 0.', $dsn)
+            );
+        }
+
+        $ackFlush = filter_var(
+            $options['ack_flush'] ?? $query['ack_flush'] ?? 0,
+            FILTER_VALIDATE_INT,
+        );
+        if (false === $ackFlush || $ackFlush < 0) {
+            throw new InvalidArgumentException(
+                sprintf('The "ack_flush" option of the DSN "%s" must be 0 or a positive integer.', $dsn)
+            );
+        }
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->managerRegistry->getManager($components['host']);
 
-        return new OutboxTransport($entityManager, $skipLocked);
+        return new OutboxTransport(
+            $entityManager,
+            $skipLocked,
+            $batchSize,
+            $prune,
+            $consumerBus,
+            $leaseSeconds,
+            $ackFlush,
+        );
     }
 
     /**

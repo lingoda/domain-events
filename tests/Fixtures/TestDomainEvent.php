@@ -7,7 +7,7 @@ namespace Lingoda\DomainEventsBundle\Tests\Fixtures;
 use Carbon\CarbonImmutable;
 use Lingoda\DomainEventsBundle\Domain\Model\DomainEvent;
 
-final class RepositoryTestEvent implements DomainEvent
+final class TestDomainEvent implements DomainEvent
 {
     public function __construct(private CarbonImmutable $occurredAt)
     {
