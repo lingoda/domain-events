@@ -4,13 +4,16 @@ declare(strict_types = 1);
 
 namespace Lingoda\DomainEventsBundle\Tests;
 
+use Carbon\CarbonImmutable;
 use Carbon\Doctrine\CarbonImmutableType;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Tools\SchemaTool;
+use Lingoda\DomainEventsBundle\Infra\Doctrine\Entity\OutboxRecord;
 use Lingoda\DomainEventsBundle\LingodaDomainEventsBundle;
+use Lingoda\DomainEventsBundle\Tests\Fixtures\TestDomainEvent;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -42,5 +45,14 @@ abstract class InMemoryDatabaseTestCase extends TestCase
 
         (new SchemaTool($this->entityManager))
             ->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
+    }
+
+    protected function persistRecord(CarbonImmutable $occurredAt): OutboxRecord
+    {
+        $record = new OutboxRecord('entity-id', new TestDomainEvent($occurredAt), $occurredAt);
+        $this->entityManager->persist($record);
+        $this->entityManager->flush();
+
+        return $record;
     }
 }
